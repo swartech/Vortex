@@ -5,21 +5,22 @@ import java.awt.image.BufferedImage;
 
 abstract class GameObject
 {
-    private BufferedImage sprite;
+    private BufferedImage sprite;        
+    private boolean collidable;
     private int x, y, width, height, velocityX, velocityY;
     
     Rectangle getBounds()
     {
-        return new Rectangle(x, y, width, height);    
+        return new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());    
     }
     
-    boolean collisionCheck(GameObject other)
-    {
-        if (this.getBounds().intersects(other.getBounds()))
-            return true;
-        else 
-            return false;        
-    }
+    //boolean collisionCheck(GameObject other)
+    //{
+    //  if (this.getBounds().intersects(other.getBounds()) && this.getCollidable() == true || other.getCollidable() == true && this.getBounds().intersects(other.getBounds()))
+    //    return true;
+    //  else 
+    //    return false;        
+    // }
     
     BufferedImage getSprite()
     {
@@ -31,6 +32,16 @@ abstract class GameObject
         this.sprite = sprite;
     }
 
+    boolean getCollidable()
+    {
+        return collidable;
+    }
+    
+    void setCollidable(boolean collidable)
+    {
+        this.collidable = collidable;
+    }
+    
     int getX()
     {
         return x;
@@ -91,7 +102,7 @@ abstract class GameObject
         this.velocityY = velocityY;
     }
     
-    public void collide()
+    public void collideWithWalls()
     {
         if (getX() > SDGame.WINDOW_WIDTH - getWidth() || getX() < 0)
         {
@@ -101,6 +112,41 @@ abstract class GameObject
         {
             setVelocityY(getVelocityY() * -1);
         }
+    }
+    
+    public void collide()
+    {
+        //collideWithWalls();  
+        for (int i = 1; i < SDGame.gameObjects.size(); i++)
+        {
+            if (SDGame.gameObjects.get(i).getBounds().intersects(SDGame.gameObjects.get(0).getBounds()))
+            {
+                SDGame.gameObjects.get(i).nullify();
+                Vortex.lives--;
+                if (Vortex.lives < 0)
+                {
+                    SDGame.gameObjects.get(0).nullify();
+                    System.out.println("GAME OVER!");
+                    
+                }
+            }
+        }
+    }
+
+    private void reflect()
+    {
+        setVelocityX(getVelocityX() * -1);
+        setVelocityY(getVelocityY() * -1);        
+    }
+    
+    private void nullify()
+    {
+        setSprite(null);
+        setVelocityX(0);
+        setVelocityY(0);
+        setX(-100);
+        setY(-100);
+        setCollidable(false);        
     }
 
     public void move()

@@ -11,10 +11,11 @@ public class Asteroid extends GameObject
     {
         setX(x);
         setY(y);
-        setVelocityX((int)(Math.random() * 4 + 1));
-        setVelocityY((int)(Math.random() * 4 + 1));
-        setWidth(50);
-        setHeight(50);
+        setWidth(getSprite().getWidth());
+        setHeight(getSprite().getHeight());
+        setVelocityX((int)(Math.random() * 5 + 1));
+        setVelocityY((int)(Math.random() * 5 + 1));
+        setCollidable(true);
         
         try
         {
@@ -26,5 +27,26 @@ public class Asteroid extends GameObject
         } 
         
         SDGame.gameObjects.add(this);                
-    }    
+    }
+    
+    public Asteroid()
+    {
+        setX((int)(Math.random() * ((SDGame.WINDOW_WIDTH * 4)) -(SDGame.WINDOW_WIDTH * 2)));
+        setY((int)(Math.random() * ((SDGame.WINDOW_HEIGHT * 4)) -(SDGame.WINDOW_HEIGHT * 2)));
+        setWidth(50);
+        setHeight(50);
+        setVelocityX((SDGame.WINDOW_CENTRE_X - getX()) / 250);
+        setVelocityY((SDGame.WINDOW_CENTRE_Y - getY()) / 250);
+        
+        try
+        {
+            setSprite(ImageIO.read(new File("img/asteroid.png")));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        } 
+        
+        SDGame.gameObjects.add(this);                
+    } 
 }
